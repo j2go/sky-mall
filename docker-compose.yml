@@ -1,0 +1,32 @@
+version: "3.2"
+services:
+  db:
+    image: mariadb
+    restart: always
+    volumes:
+      - sky-db:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MARIADB_ROOT_PASSWORD=just1Mall.
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+  oap:
+    image: apache/skywalking-oap:8.6.0-es7
+    restart: always
+    ports:
+      - "11800"
+      - "12800"
+  oap-ui:
+    image: apache/skywalking-ui:8.6.0
+    restart: always
+    ports: 
+      - "10000:8080"
+      
+networks:
+  sky-net:
+volumes:
+  sky-db:
