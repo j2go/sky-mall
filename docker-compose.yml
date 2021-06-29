@@ -2,6 +2,7 @@ version: "3.2"
 services:
   db:
     image: mariadb
+    container_name: mariadb
     restart: always
     volumes:
       - sky-db:/var/lib/mysql
@@ -9,6 +10,29 @@ services:
       - "3306:3306"
     environment:
       - MARIADB_ROOT_PASSWORD=just1Mall.
+  nacos:
+    image: nacos/nacos-server:2.0.2
+    container_name: nacos
+    restart: always
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - MYSQL_SERVICE_HOST=db
+      - MYSQL_SERVICE_DB_NAME=nacos
+      - MYSQL_SERVICE_PORT=3306
+      - MYSQL_SERVICE_USER=root
+      - MYSQL_SERVICE_PASSWORD=just1Mall.
+      - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false
+    volumes:
+      - ./nacos.properties:/home/nacos/init.d/custom.properties
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+      - "9555:9555"
+    depends_on:
+      - db
+
   redis:
     image: redis
     restart: always
