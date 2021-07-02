@@ -1,37 +1,37 @@
 version: "3.2"
 services:
-  db:
-    image: mariadb
-    container_name: mariadb
-    restart: always
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      TZ: Asia/Shanghai
     volumes:
-      - sky-db:/var/lib/mysql
+      - sky-mysql:/var/lib/mysql
     ports:
       - "3306:3306"
-    environment:
-      - MARIADB_ROOT_PASSWORD=just1Mall.
+    restart: always
+
   nacos:
     image: nacos/nacos-server:2.0.2
-    container_name: nacos
-    restart: always
+    container_name: nacos-standalone
     environment:
-      - PREFER_HOST_MODE=hostname
-      - MODE=standalone
-      - SPRING_DATASOURCE_PLATFORM=mysql
-      - MYSQL_SERVICE_HOST=db
-      - MYSQL_SERVICE_DB_NAME=nacos
-      - MYSQL_SERVICE_PORT=3306
-      - MYSQL_SERVICE_USER=root
-      - MYSQL_SERVICE_PASSWORD=just1Mall.
-      - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false
-    volumes:
-      - ./nacos.properties:/home/nacos/init.d/custom.properties
+      SPRING_DATASOURCE_PLATFORM: mysql
+      MYSQL_SERVICE_HOST: mysql
+      MYSQL_SERVICE_PORT: 3306
+      MYSQL_SERVICE_USER: root
+      MYSQL_SERVICE_PASSWORD: 123456
+      MYSQL_SERVICE_DB_NAME: nacos
     ports:
       - "8848:8848"
       - "9848:9848"
       - "9555:9555"
     depends_on:
-      - db
+      - mysql
+    links:
+      - mysql:mysql
+    restart: always
+
 
   redis:
     image: redis
@@ -39,7 +39,7 @@ services:
     ports:
       - "6379:6379"
   oap:
-    image: apache/skywalking-oap:8.6.0-es7
+    image: apache/skywalking-oap-server:8.6.0-es7
     restart: always
     ports:
       - "11800"
@@ -53,4 +53,4 @@ services:
 networks:
   sky-net:
 volumes:
-  sky-db:
+  sky-mysql:
