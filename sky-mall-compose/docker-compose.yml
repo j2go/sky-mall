@@ -2,9 +2,9 @@ version: "3.2"
 services:
   mysql:
     container_name: mysql
-    image: mysql:8.0
+    image: mysql:8
     environment:
-      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: 12345678
       TZ: Asia/Shanghai
     volumes:
       - sky-mysql:/var/lib/mysql
@@ -13,14 +13,14 @@ services:
     restart: always
 
   nacos:
-    image: nacos/nacos-server:2.0.2
+    image: nacos/nacos-server:2.0.3
     container_name: nacos-standalone
     environment:
       SPRING_DATASOURCE_PLATFORM: mysql
       MYSQL_SERVICE_HOST: mysql
       MYSQL_SERVICE_PORT: 3306
       MYSQL_SERVICE_USER: root
-      MYSQL_SERVICE_PASSWORD: 123456
+      MYSQL_SERVICE_PASSWORD: 12345678
       MYSQL_SERVICE_DB_NAME: nacos
     ports:
       - "8848:8848"
@@ -32,20 +32,19 @@ services:
       - mysql:mysql
     restart: always
 
-
   redis:
-    image: redis
+    image: redis:6
     restart: always
     ports:
       - "6379:6379"
   oap:
-    image: apache/skywalking-oap-server:8.6.0-es7
+    image: apache/skywalking-oap-server:8.7.0-es7
     restart: always
     ports:
       - "11800"
       - "12800"
   oap-ui:
-    image: apache/skywalking-ui:8.6.0
+    image: apache/skywalking-ui:8.7.0
     restart: always
     ports: 
       - "10000:8080"
